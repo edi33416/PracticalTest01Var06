@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PracticalTest01Var06</string>
+    <string name="action_settings">Settings</string>
+    <string name="student_name">Constantin Eduard Staniloiu</string>
+    <string name="more_details">More details</string>
+    <string name="less_details">Less details</string>
+    <string name="addr_passed">Pass</string>
+    <string name="addr_failed">Fail</string>
+    <string name="navigate_to_secondary_activity">Navigate to secondary activity</string>
+</resources>
