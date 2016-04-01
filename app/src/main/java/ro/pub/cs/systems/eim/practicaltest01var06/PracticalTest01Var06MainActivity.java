@@ -1,10 +1,14 @@
 package ro.pub.cs.systems.eim.practicaltest01var06;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +27,11 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
     private Button navigateToSecondaryActivityButton = null;
     private ButtonClickListenter buttonClickListenter = new ButtonClickListenter();
     private LinearLayout moreDetailsContainerLayout = null;
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+    private IntentFilter intentFilter = new IntentFilter();
+
     private boolean isMoreDetailsContainerVisible = true;
+    private boolean isServiceStopped = true;
 
     private static final int SECONDARY_ACTIVITY_REQ_CODE = 1;
 
@@ -56,6 +64,13 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
         }
     }
 
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("[Message]", intent.getStringExtra("message"));
+        }
+    }
+
     private final TextWatcher addressWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -68,6 +83,13 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
             if (addressText.startsWith("http")) {
                 addressStatusButton.setText(getResources().getString(R.string.addr_passed));
                 addressStatusButton.setBackground(getResources().getDrawable(R.color.green));
+
+                if (isServiceStopped == Constants.SERVICE_STOPPED) {
+                    Intent intent = new Intent(getApplicationContext(), PracticalTest01Var06Service.class);
+                    intent.putExtra("internet_address", addressText);
+                    isServiceStopped = Constants.SERVICE_STARTED;
+                    getApplicationContext().startService(intent);
+                }
             } else {
                 addressStatusButton.setText(getResources().getString(R.string.addr_failed));
                 addressStatusButton.setBackground(getResources().getDrawable(R.color.red));
@@ -100,6 +122,23 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
         /* Add button listener */
         detailsToggleButton.setOnClickListener(buttonClickListenter);
         navigateToSecondaryActivityButton.setOnClickListener(buttonClickListenter);
+
+        /* Add intent filter for message broadcast receiver */
+        for (int i = 0; i < Constants.ACTION_TYPES.length; ++i) {
+            intentFilter.addAction(Constants.ACTION_TYPES[i]);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
     }
 
     @Override
@@ -153,5 +192,12 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
         if (requestCode == SECONDARY_ACTIVITY_REQ_CODE) {
             Toast.makeText(this, "The activity returned with result" + resultCode, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, PracticalTest01Var06Service.class);
+        stopService(intent);
+        super.onDestroy();
     }
 }
