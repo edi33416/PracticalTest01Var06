@@ -32,6 +32,7 @@
 
         <EditText
             android:id="@+id/address_edit_text"
+            android:saveEnabled="false"
             android:layout_weight="0.25"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

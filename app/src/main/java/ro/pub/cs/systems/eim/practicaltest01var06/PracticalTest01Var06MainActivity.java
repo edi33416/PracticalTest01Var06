@@ -6,14 +6,38 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 public class PracticalTest01Var06MainActivity extends ActionBarActivity {
     private EditText addressEditText = null;
     private Button detailsToggleButton = null;
     private Button addressStatusButton = null;
     private Button navigateToSecondaryActivityButton = null;
+    private ButtonClickListenter buttonClickListenter = new ButtonClickListenter();
+    private LinearLayout moreDetailsContainerLayout = null;
+    private boolean isMoreDetailsContainerVisible = true;
+
+    private class ButtonClickListenter implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.details_toggle_button:
+                    if (isMoreDetailsContainerVisible) {
+                        detailsToggleButton.setText(getResources().getString(R.string.more_details));
+                        moreDetailsContainerLayout.setVisibility(View.INVISIBLE);
+                        isMoreDetailsContainerVisible = false;
+                    } else {
+                        detailsToggleButton.setText(getResources().getString(R.string.less_details));
+                        moreDetailsContainerLayout.setVisibility(View.VISIBLE);
+                        isMoreDetailsContainerVisible = true;
+                    }
+                    break;
+            }
+        }
+    }
 
     private final TextWatcher addressWatcher = new TextWatcher() {
         @Override
@@ -37,7 +61,7 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
         public void afterTextChanged(Editable editable) {
 
         }
-    }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +72,15 @@ public class PracticalTest01Var06MainActivity extends ActionBarActivity {
         detailsToggleButton = (Button)findViewById(R.id.details_toggle_button);
         addressStatusButton = (Button)findViewById(R.id.address_status_button);
         navigateToSecondaryActivityButton = (Button)findViewById(R.id.navigate_to_secondary_activity_button);
+        moreDetailsContainerLayout = (LinearLayout)findViewById(R.id.more_details_container);
+
+        isMoreDetailsContainerVisible = true;
 
         /* Set text watcher */
         addressEditText.addTextChangedListener(addressWatcher);
+
+        /* Add toggle listener */
+        detailsToggleButton.setOnClickListener(buttonClickListenter);
     }
 
     @Override
