@@ -7,4 +7,9 @@
     <string name="addr_passed">Pass</string>
     <string name="addr_failed">Fail</string>
     <string name="navigate_to_secondary_activity">Navigate to secondary activity</string>
+    <string name="title_activity_practical_test01_var06_secondary">
+        PracticalTest01Var06SecondaryActivity
+    </string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

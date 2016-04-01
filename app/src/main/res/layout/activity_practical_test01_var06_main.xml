@@ -11,6 +11,8 @@
     tools:context="ro.pub.cs.systems.eim.practicaltest01var06.PracticalTest01Var06MainActivity">
 
     <EditText
+        android:id="@+id/student_name_edit_text"
+        android:saveEnabled="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/student_name"
